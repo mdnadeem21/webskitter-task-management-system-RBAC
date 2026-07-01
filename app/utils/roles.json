@@ -1,0 +1,5 @@
+{
+    "Admin": ["task:create", "task:read", "task:update", "task:delete", "user:all"],
+    "Manager": ["task:create", "task:read", "task:update"],
+    "User": ["task:read", "task:update"]
+}
