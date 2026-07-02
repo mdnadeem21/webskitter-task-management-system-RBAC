@@ -58,6 +58,7 @@ class UserController {
             res.status(200).json({
                 status: "success",
                 message: "User logged in successfully",
+                data:user,
                 token,
             });
         } catch (error) {
@@ -95,9 +96,9 @@ class UserController {
 
     async deleteUser(req, res) {
         try {
-            const { userId } = req.params;
+            const { id } = req.params;
 
-            const user = await User.findByIdAndDelete(userId);
+            const user = await User.findByIdAndDelete(id);
             if (!user) {
                 return res.status(404).json({ message: "User not found" });
             }
@@ -112,6 +113,25 @@ class UserController {
             res.status(500).json({
                 status: false,
                 message: "Server error in deleteUser" });
+        }
+    }
+    async getAllUsers(req, res) {
+        try {
+            const users = await User.find();
+            if (!users || users.length === 0) {
+                return res.status(404).json({ message: "No users found" });
+            }
+            res.status(200).json({
+                status: "success",
+                length: users.length,
+                message: "Users retrieved successfully",
+                data: users,
+            });
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({
+                status: false,
+                message: "Server error in getAllUsers" });
         }
     }
 }

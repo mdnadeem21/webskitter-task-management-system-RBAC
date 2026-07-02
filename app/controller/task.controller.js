@@ -35,9 +35,14 @@ class TaskController {
   }
   async getAllTasks(req, res) {
     try {
-      const tasks = await Task.find().populate("assignedTo", "name email role");
+      const tasks = await Task.find().populate({
+    path: "assignedTo",
+    select: "name email role",
+    model: User
+  });
       res.status(200).json({
         status: "success",
+        length: tasks.length,
         message: "Tasks fetched successfully",
         data: tasks,
       });

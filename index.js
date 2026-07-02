@@ -21,6 +21,9 @@ app.get('/', (req, res) => {
   res.send('Hello from the basic Express app!');
 });
 
+//Routes
+const userRoutes=require('./app/routes/user.routes');
+app.use('/api/user/v1',userRoutes); 
 
 const PORT = process.env.PORT || 9090;
 app.listen(PORT,(error)=>{
