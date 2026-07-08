@@ -22,6 +22,31 @@ const UserSchema=new mongoose.Schema({
     }
 },{timestamps:true});
 
+UserSchema.methods.generateRefreshToken = function () {
+  return jwt.sign(
+    {
+      _id: this._id,
+    },
+    process.env.REFRESH_TOKEN_SECRET,
+    {
+      expiresIn: process.env.REFRESH_TOKEN_SECRET_EXPIRE,
+    }
+  );
+};
+UserSchema.methods.generateAccessToken = function () {
+    return jwt.sign(
+      {
+        _id: this._id,
+        email: this.email,
+        fullname: this.fullname,
+        username: this.username,
+      },
+      process.env.ACCESS_TOKEN_SECRET,
+      {
+        expiresIn: process.env.ACCESS_TOKEN_SECRET_EXPIRE,
+      }
+    );
+  };
 const User=mongoose.model('manage-role-based-user',UserSchema);
 
 module.exports=User;

@@ -4,10 +4,12 @@ const jwt = require("jsonwebtoken");
 
 
 class UserController {
+
+    
     async registerUser(req, res) {
         try {
             const { name, email, password } = req.body;
-            
+
             const existingUser = await User.findOne({ email });
             if (existingUser) {
                 return res.status(400).json({ message: "User already exists" });
@@ -23,16 +25,17 @@ class UserController {
 
             const data = await newUser.save();
 
-            res.status(201).json({ 
+            res.status(201).json({
                 status: "success",
                 message: "User registered successfully",
-                data:data
+                data: data
             });
         } catch (error) {
             console.error(error);
             res.status(500).json({
                 status: false,
-                message: "Server error in registerUser" });
+                message: "Server error in registerUser"
+            });
         }
     }
     async loginUser(req, res) {
@@ -48,6 +51,8 @@ class UserController {
             if (!isMatch) {
                 return res.status(400).json({ message: "Invalid credentials" });
             }
+            const accessToken = user.generateAccessToken();
+            const refreshToken = user.generateRefreshToken();
 
             const token = jwt.sign(
                 { id: user._id, role: user.role },
@@ -58,14 +63,17 @@ class UserController {
             res.status(200).json({
                 status: "success",
                 message: "User logged in successfully",
-                data:user,
-                token,
+                data: user,
+                token:token,
+                accessToken: accessToken,
+                refreshToken: refreshToken
             });
         } catch (error) {
             console.error(error);
             res.status(500).json({
                 status: false,
-                message: "Server error in loginUser" });
+                message: "Server error in loginUser"
+            });
         }
     }
 
@@ -90,7 +98,8 @@ class UserController {
             console.error(error);
             res.status(500).json({
                 status: false,
-                message: "Server error in assignRole" });
+                message: "Server error in assignRole"
+            });
         }
     }
 
@@ -112,7 +121,8 @@ class UserController {
             console.error(error);
             res.status(500).json({
                 status: false,
-                message: "Server error in deleteUser" });
+                message: "Server error in deleteUser"
+            });
         }
     }
     async getAllUsers(req, res) {
@@ -131,7 +141,8 @@ class UserController {
             console.error(error);
             res.status(500).json({
                 status: false,
-                message: "Server error in getAllUsers" });
+                message: "Server error in getAllUsers"
+            });
         }
     }
 }
